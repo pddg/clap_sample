@@ -19,7 +19,7 @@ fn main() {
     let args = Args::parse();
     println!("name: {}", args.name);
     println!("count: {}", args.count);
-    println!("opt: {}", args.opt.unwrap_or("not specified".to_string()));
+    println!("opt: {}", args.opt.unwrap_or_else(|| "not specified".to_string()));
     println!("inputs: {:?}", args.inputs);
 }
 

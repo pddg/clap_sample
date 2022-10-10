@@ -14,7 +14,7 @@ fn main() {
     let args = Args::parse();
     println!(
         "input: {}, input_from_stdin: {}",
-        args.input.unwrap_or("not specified".to_string()),
+        args.input.unwrap_or_else(|| "not specified".to_string()),
         args.input_from_stdin
     );
 }

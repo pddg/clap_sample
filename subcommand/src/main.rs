@@ -127,13 +127,13 @@ mod test {
     fn verbose_can_specify_all_sub_commands() {
         let args = Cli::try_parse_from(["", "--verbose", "hoge", "--opt", "1"]);
         assert!(args.is_ok());
-        assert_eq!(args.unwrap().verbose, true);
+        assert!(args.unwrap().verbose);
         let args = Cli::try_parse_from(["", "hoge", "--verbose", "--opt", "1"]);
         assert!(args.is_ok());
-        assert_eq!(args.unwrap().verbose, true);
+        assert!(args.unwrap().verbose);
         let args = Cli::try_parse_from(["", "fuga", "--verbose", "--opt", "1"]);
         assert!(args.is_ok());
-        assert_eq!(args.unwrap().verbose, true);
+        assert!(args.unwrap().verbose);
         let args = Cli::try_parse_from([
             "",
             "fuga",
@@ -145,7 +145,7 @@ mod test {
             "1",
         ]);
         assert!(args.is_ok());
-        assert_eq!(args.unwrap().verbose, true);
+        assert!(args.unwrap().verbose);
     }
 
     #[test]
