@@ -1,0 +1,18 @@
+[workspace]
+members = [
+    "positional_arg",
+    "optional_arg",
+    "flag",
+    "env_var",
+    "multiple_value",
+    "exclusive_option",
+    "choices",
+    "subcommand",
+]
+
+[workspace.package]
+edition = "2021"
+license = "Apache-2.0"
+
+[workspace.dependencies]
+clap = { version = "4.0.11", features = ["derive"] }
