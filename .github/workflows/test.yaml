@@ -1,0 +1,21 @@
+name: Test
+
+on:
+  - push
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: cargo fmt
+        run: |-
+          rustup component add rustfmt
+          cargo fmt -- --check
+      - name: cargo clippy
+        run: |-
+          rustup component add clippy
+          cargo clippy -- -D warnings
+      - name: cargo test
+        run: |-
+          cargo test --all -- --test-threads=1
