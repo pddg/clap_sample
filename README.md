@@ -1,5 +1,7 @@
 # Usage sample of clap
 
+[![Test](https://github.com/pddg/clap_sample/actions/workflows/test.yaml/badge.svg)](https://github.com/pddg/clap_sample/actions/workflows/test.yaml)
+
 clapを使ったCLIオプション実装のサンプル集
 
 - [positional_arg](./positional_arg/)
