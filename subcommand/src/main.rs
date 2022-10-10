@@ -36,9 +36,9 @@ struct FugaArgs {
 enum SubCommands {
     #[command(about = "help for nested")]
     Nested {
-        #[arg(short, long, help="opt for nested")]
+        #[arg(short, long, help = "opt for nested")]
         opt: String,
-    }
+    },
 }
 
 fn main() {
@@ -52,13 +52,11 @@ fn main() {
             println!("fuga {}", fuga.opt);
             println!("global {}", fuga.global);
             match fuga.command {
-                Some(c) => {
-                    match c {
-                        SubCommands::Nested { opt } => {
-                            println!("nested {}", opt);
-                        }
+                Some(c) => match c {
+                    SubCommands::Nested { opt } => {
+                        println!("nested {}", opt);
                     }
-                }
+                },
                 None => {
                     println!("sub command is not specified");
                 }
@@ -87,31 +85,42 @@ mod test {
     fn hoge() {
         let args = Cli::try_parse_from(["", "hoge", "--opt", "1"]);
         assert!(args.is_ok());
-        assert_eq!(args.unwrap().command, Commands::Hoge { opt: "1".to_string() });
+        assert_eq!(
+            args.unwrap().command,
+            Commands::Hoge {
+                opt: "1".to_string()
+            }
+        );
     }
 
     #[test]
     fn fuga() {
         let args = Cli::try_parse_from(["", "fuga", "--opt", "1"]);
         assert!(args.is_ok());
-        assert_eq!(args.unwrap().command, Commands::Fuga(FugaArgs {
-            opt: "1".to_string(),
-            command: None,
-            global: false,
-        }));
+        assert_eq!(
+            args.unwrap().command,
+            Commands::Fuga(FugaArgs {
+                opt: "1".to_string(),
+                command: None,
+                global: false,
+            })
+        );
     }
 
     #[test]
     fn fuga_nested() {
         let args = Cli::try_parse_from(["", "fuga", "--opt", "1", "nested", "--opt", "1"]);
         assert!(args.is_ok());
-        assert_eq!(args.unwrap().command, Commands::Fuga(FugaArgs {
-            opt: "1".to_string(),
-            command: Some(SubCommands::Nested {
+        assert_eq!(
+            args.unwrap().command,
+            Commands::Fuga(FugaArgs {
                 opt: "1".to_string(),
-            }),
-            global: false,
-        }));
+                command: Some(SubCommands::Nested {
+                    opt: "1".to_string(),
+                }),
+                global: false,
+            })
+        );
     }
 
     #[test]
@@ -125,7 +134,16 @@ mod test {
         let args = Cli::try_parse_from(["", "fuga", "--verbose", "--opt", "1"]);
         assert!(args.is_ok());
         assert_eq!(args.unwrap().verbose, true);
-        let args = Cli::try_parse_from(["", "fuga", "--opt", "1", "nested", "--verbose", "--opt", "1"]);
+        let args = Cli::try_parse_from([
+            "",
+            "fuga",
+            "--opt",
+            "1",
+            "nested",
+            "--verbose",
+            "--opt",
+            "1",
+        ]);
         assert!(args.is_ok());
         assert_eq!(args.unwrap().verbose, true);
     }
@@ -134,7 +152,8 @@ mod test {
     fn globa_can_specify_from_fuga_or_its_sub_commands() {
         let args = Cli::try_parse_from(["", "fuga", "--global", "--opt", "1"]);
         assert!(args.is_ok());
-        let args = Cli::try_parse_from(["", "fuga", "--opt", "1", "nested", "--global", "--opt", "1"]);
+        let args =
+            Cli::try_parse_from(["", "fuga", "--opt", "1", "nested", "--global", "--opt", "1"]);
         assert!(args.is_ok());
         let args = Cli::try_parse_from(["", "hoge", "--global", "--opt", "1"]);
         assert!(args.is_err());

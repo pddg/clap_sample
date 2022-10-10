@@ -28,8 +28,8 @@ fn main() {
 // これらのテストは環境変数に依存するため、1スレッドで直列に実行されなければいけません。
 #[cfg(test)]
 mod test {
-    use std::env;
     use super::*;
+    use std::env;
 
     #[test]
     fn no_arg_no_env() {
@@ -45,7 +45,15 @@ mod test {
         env::remove_var("FROM_ENV");
         env::remove_var("CREDENTIAL");
         env::remove_var("HIDDEN_ENV");
-        let args = Args::try_parse_from(["", "--from-env", "value", "--credential", "password", "--hidden-env", "hidden"]);
+        let args = Args::try_parse_from([
+            "",
+            "--from-env",
+            "value",
+            "--credential",
+            "password",
+            "--hidden-env",
+            "hidden",
+        ]);
         assert!(args.is_ok());
         let args = args.unwrap();
         assert_eq!(args.from_env, "value");
