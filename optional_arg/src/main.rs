@@ -22,3 +22,42 @@ fn main() {
     println!("opt: {}", args.opt.unwrap_or("not specified".to_string()));
     println!("inputs: {:?}", args.inputs);
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn no_arg() {
+        let args = Args::try_parse_from([""]);
+        assert!(args.is_err());
+    }
+
+    #[test]
+    fn with_required() {
+        let args = Args::try_parse_from(["", "-n", "name", "-c", "1"]);
+        assert!(args.is_ok());
+        let args = args.unwrap();
+        assert_eq!(args.name, "name");
+        assert_eq!(args.count, 1);
+        assert_eq!(args.opt, None);
+        assert_eq!(args.inputs.len(), 0);
+    }
+
+    #[test]
+    fn with_non_required() {
+        let args = Args::try_parse_from(["", "-n", "name", "-c", "1", "-o", "opt", "-i", "one"]);
+        assert!(args.is_ok());
+        let args = args.unwrap();
+        assert_eq!(args.name, "name");
+        assert_eq!(args.count, 1);
+        assert_eq!(args.opt, Some("opt".to_string()));
+        assert_eq!(args.inputs, vec!["one"]);
+    }
+
+    #[test]
+    fn non_integer() {
+        let args = Args::try_parse_from(["", "-n", "name", "-c", "invalid"]);
+        assert!(args.is_err());
+    }
+}

@@ -25,4 +25,19 @@ mod test {
         assert!(args.is_ok());
         assert_eq!(args.unwrap().pos_arg, "hoge".to_string());
     }
+
+    #[test]
+    fn with_escape() {
+        let args = Args::try_parse_from(["", "hoge", "--", "--no-such-opt"]);
+        assert!(args.is_ok());
+        let args = args.unwrap();
+        assert_eq!(args.pos_arg, "hoge".to_string());
+        assert_eq!(args.last_args, vec!["--no-such-opt"])
+    }
+
+    #[test]
+    fn no_escape_with_opt() {
+        let args = Args::try_parse_from(["", "hoge", "--no-such-opt"]);
+        assert!(args.is_err());
+    }
 }

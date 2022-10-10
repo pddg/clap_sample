@@ -24,3 +24,45 @@ fn main() {
     println!("credential: {}", args.credential);
     println!("hidden: {}", args.hidden_env);
 }
+
+// これらのテストは環境変数に依存するため、1スレッドで直列に実行されなければいけません。
+#[cfg(test)]
+mod test {
+    use std::env;
+    use super::*;
+
+    #[test]
+    fn no_arg_no_env() {
+        env::remove_var("FROM_ENV");
+        env::remove_var("CREDENTIAL");
+        env::remove_var("HIDDEN_ENV");
+        let args = Args::try_parse_from([""]);
+        assert!(args.is_err());
+    }
+
+    #[test]
+    fn with_arg_no_env() {
+        env::remove_var("FROM_ENV");
+        env::remove_var("CREDENTIAL");
+        env::remove_var("HIDDEN_ENV");
+        let args = Args::try_parse_from(["", "--from-env", "value", "--credential", "password", "--hidden-env", "hidden"]);
+        assert!(args.is_ok());
+        let args = args.unwrap();
+        assert_eq!(args.from_env, "value");
+        assert_eq!(args.credential, "password");
+        assert_eq!(args.hidden_env, "hidden");
+    }
+
+    #[test]
+    fn no_arg_with_env() {
+        env::set_var("FROM_ENV", "value");
+        env::set_var("CREDENTIAL", "password");
+        env::set_var("HIDDEN_ENV", "hidden");
+        let args = Args::try_parse_from([""]);
+        assert!(args.is_ok());
+        let args = args.unwrap();
+        assert_eq!(args.from_env, "value");
+        assert_eq!(args.credential, "password");
+        assert_eq!(args.hidden_env, "hidden");
+    }
+}
